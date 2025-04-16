@@ -1,62 +1,29 @@
-package page;
+package ru.netology.page;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import ru.netology.data.DataHelper;
 
-import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Selenide.$;
 
 public class LoginPage {
-    private SelenideElement loginInput = $x("//span[@data-test-id='login']//input");
-    private SelenideElement loginInputEmptyNotification = $x(
-            "//span[@data-test-id='login']//span[@class='input__sub']");
-    private SelenideElement passwordInput = $x("//span[@data-test-id='password']//input");
-    private SelenideElement passwordInputEmptyNotification = $x(
-            "//span[@data-test-id='password']//span[@class='input__sub']");
-    private SelenideElement loginButton = $x("//button[@data-test-id='action-login']");
-    private SelenideElement errorNotification = $x("//div[@data-test-id='error-notification']");
-    private SelenideElement errorButton = $x("//div[@data-test-id='error-notification']/button");
+    private SelenideElement loginField = $("[data-test-id=login] input");
+    private SelenideElement passwordField = $("[data-test-id=password] input");
+    private SelenideElement loginButton = $("[data-test-id=action-login]");
+    private SelenideElement errorNotification = $("[data-test-id=error-notification]");
 
-    public LoginPage() {
-        loginInput.should(visible);
-        passwordInput.should(visible);
-        loginButton.should(visible);
-        errorNotification.should(hidden);
-        errorButton.should(hidden);
-    }
-
-    public void insert(String login, String password) {
-        loginInput.val(login);
-        passwordInput.val(password);
+    public void login (DataHelper.AuthInfo info) {
+        loginField.setValue(info.getLogin());
+        passwordField.setValue(info.getPassword());
         loginButton.click();
     }
 
-    public VerifyPage success() {
-        errorNotification.should(hidden);
-        errorButton.should(hidden);
-        return new VerifyPage();
+    public void verifyErrorNotification() {
+        errorNotification.shouldBe(Condition.visible);
+    }
+    public VerificationPage ValidLogin(DataHelper.AuthInfo info) {
+        login(info);
+        return new VerificationPage();
     }
 
-    public void failed() {
-        errorNotification.should(visible);
-        errorNotification.$x(".//div[@class='notification__content']").
-                should(text("Ошибка! " + "Неверно указан логин или пароль"));
-        errorButton.click();
-        errorNotification.should(hidden);
-    }
-
-    public void blocked() {
-        errorNotification.should(visible);
-        errorNotification.$x(".//div[@class='notification__content']").
-                should(text("Ошибка! " + "Пользователь заблокирован"));
-        errorButton.click();
-        errorNotification.should(hidden);
-    }
-
-    public void emptyLogin() {
-        loginInputEmptyNotification.should(text("Поле обязательно для заполнения"));
-    }
-
-    public void emptyPassword() {
-        passwordInputEmptyNotification.should(text("Поле обязательно для заполнения"));
-    }
 }

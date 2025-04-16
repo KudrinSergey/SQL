@@ -2,7 +2,6 @@ package ru.netology.page;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
-import ru.netology.data.DataHelper;
 
 import static com.codeborne.selenide.Selenide.$;
 
@@ -14,10 +13,11 @@ public class VerificationPage {
         codeField.shouldBe(Condition.visible);
     }
 
-    public DashboardPage validVerify(String verificationCode) {
-        codeField.setValue(verificationCode);
-        verifyButton.click();
+    public DashboardPage validVerify(String VerificationCode) {
+        Verify (VerificationCode);
         return new DashboardPage();
     }
-
-}
+    public void Verify(String VerificationCode) {
+        codeField.setValue(VerificationCode);
+        verifyButton.click();
+    }}
